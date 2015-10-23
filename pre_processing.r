@@ -40,14 +40,11 @@ remove_stop_words <- function(vectorized_text){
     'such','no','nor','not','only','own','same','so','than','too','very','one','every','least','less','many','now','ever','never','say','says','said',
     'also','get','go','goes','just','made','make','put','see','seen','whether','like','well','back','even','still','way','take','since','another',
     'however','two','three','four','five','first','second','new','old','high','long','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o',
-    'p','q','r','s','t','u','v','x','w','y','z','re', "")
+    'p','q','r','s','t','u','v','x','w','y','z','re',"","ll","co","uk","subject")
   removed_stop_words = match(vectorized_text, english_stop_words)
   #Words removed will have a match in the array, words that does not appear will always be NA.
   remaning_words = vectorized_text[is.na(removed_stop_words)]
 }
-
-
-
 
 #Stemmer e StopWords
 library(SnowballC)
@@ -65,21 +62,3 @@ stemming <- function(tokenized_text, concatenated_files) {
   }
   concatenated_files
 }
-
-# Gets all the files and saves in 2 vectors (class and text)
-
-folders = list.dirs('./20news-bydate/20news-bydate-train')
-
-file_names = list.files(folders, full.names=TRUE, pattern='[0-9]')
-
-classes <- getClasses(file_names)
-
-print("Realizando o Tokenizing")
-tokenized_text <- tokenizing(file_names, c())
-
-print("Removendo StopWords e realizando o stemming")
-stemmed_files <- stemming(tokenized_text, c())
-
-
-
-
