@@ -16,6 +16,7 @@ tokenizing <- function(original_files, concatenated_files){
     #Tokenizing
     #lower case all strings AND replacwith 'D'
     formatted_text = gsub("[0-9]", " ", tolower(formatted_text))
+    formatted_text = gsub("_", " ", formatted_text))
 
     #replace special characters with empty space
     formatted_text = gsub("\\W", " ", formatted_text)
@@ -40,7 +41,7 @@ remove_stop_words <- function(vectorized_text){
     'such','no','nor','not','only','own','same','so','than','too','very','one','every','least','less','many','now','ever','never','say','says','said',
     'also','get','go','goes','just','made','make','put','see','seen','whether','like','well','back','even','still','way','take','since','another',
     'however','two','three','four','five','first','second','new','old','high','long','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o',
-    'p','q','r','s','t','u','v','x','w','y','z','re',"","ll","co","uk","subject")
+    'p','q','r','s','t','u','v','x','w','y','z','re',"","ll","co","uk","subject", "edu","therefore", "fromyour")
   removed_stop_words = match(vectorized_text, english_stop_words)
   #Words removed will have a match in the array, words that does not appear will always be NA.
   remaning_words = vectorized_text[is.na(removed_stop_words)]
