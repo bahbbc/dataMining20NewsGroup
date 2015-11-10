@@ -24,3 +24,11 @@ corpus <- Corpus(VectorSource(stemmed_files))
 tf_idf <- TermDocumentMatrix(corpus, control = list(bounds = list(global = c(5, 70)), removePunctuation = TRUE, stopwords = TRUE, removeNumbers= TRUE))
 
 #document_term <- tf_idf(stemmed_files)
+m <- TextDocument(corpus)
+tf <- findFreqTerms(tf_idf, 1, Inf)
+
+freq <- colSums(as.matrix(tf_idf))
+length(freq)
+
+
+test <- removeSparseTerms(tf_idf, 0.5) # This makes a matrix that is 10% empty space, maximum.

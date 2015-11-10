@@ -16,7 +16,7 @@ tokenizing <- function(original_files, concatenated_files){
     #Tokenizing
     #lower case all strings AND replacwith 'D'
     formatted_text = gsub("[0-9]", " ", tolower(formatted_text))
-    formatted_text = gsub("_", " ", formatted_text))
+    formatted_text = gsub("_", " ", formatted_text)
 
     #replace special characters with empty space
     formatted_text = gsub("\\W", " ", formatted_text)
