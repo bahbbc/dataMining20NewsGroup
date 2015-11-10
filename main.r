@@ -24,11 +24,17 @@ corpus <- Corpus(VectorSource(stemmed_files))
 tf_idf <- TermDocumentMatrix(corpus, control = list(bounds = list(global = c(5, 70)), removePunctuation = TRUE, stopwords = TRUE, removeNumbers= TRUE))
 
 #document_term <- tf_idf(stemmed_files)
-m <- TextDocument(corpus)
 tf <- findFreqTerms(tf_idf, 1, Inf)
 
 freq <- colSums(as.matrix(tf_idf))
+o_freq <- sort(freq), decreasing=TRUE)
 length(freq)
+
+library(ggplot2)
+p <- ggplot(subset(wf, freq>50), aes(word, freq))
+p <- p + geom_bar(stat="identity")
+p <- p + theme(axis.text.x=element_text(angle=45, hjust=1))
+p
 
 
 test <- removeSparseTerms(tf_idf, 0.5) # This makes a matrix that is 10% empty space, maximum.
