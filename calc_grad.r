@@ -3,7 +3,7 @@
 # weights_a -> random inicial weights
 # weights_b -> random inicial weights
 # N is the total instance number
-grad <- function(x=add_bias(x), Yd, weights_a, weights_b, N, alpha){
+error <- function(x=add_bias(x), Yd, weights_a, weights_b){
   #calculate x*weights without bias, then sums the bias
   Zin <- add_bias(x) %*% t(weights_a)
   Z <- gauss(Zin)
@@ -11,18 +11,22 @@ grad <- function(x=add_bias(x), Yd, weights_a, weights_b, N, alpha){
   Y <-gauss(Yin)
   err <- Y - Yd
 
-#calculate new_b
+  list(Zin, Z, Yin, err, Y)
+}
+
+grad <- function(x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b){
+  #calculate new_b
   new_b=NULL
   #uses de Et derivative in relation to b
   dEt_db <- 1/N*t(add_bias(Z)%*%(err*derivative_gaus(Yin)))
-  new_b <- rbind(new_b, new_weight(alpha, dEt_db, weights_b))
+  new_b <- rbind(new_b, new_weight_momentum(alpha, dEt_db, weights_b, 0.1))
 
 #calculate new_a
   new_a=NULL
   dEt_da <-t(add_bias(x)%*%(((err*derivative_gaus(Yin))%*%weights_b[,-dim(weights_a)[1]])*derivative_gaus(Zin)))
-  new_a <- rbind(new_a, new_weight(alpha, dEt_da, weights_a))
+  new_a <- rbind(new_a, new_weight_momentum(alpha, dEt_da, weights_a, 0.8))
 
-  list(new_a, new_b, Y, quad_err(err))
+  list(new_a, new_b, dEt_da, dEt_db)
 }
 
 #add initial weights as random numbers from 0 to 1 and all bias as 1
@@ -44,8 +48,17 @@ derivative_gaus <- function(x){
   t(attr(eval(deriv(~exp(-(x^2)/2), "x")), 'gradient'))
 }
 
+new_weight_momentum <- function(alpha, grad, old_weight, m){
+  (old_weight - alpha * grad) + m * old_weight
+}
+
 new_weight <- function(alpha, grad, old_weight){
   old_weight - alpha * grad
+}
+
+grad_norm <- function(dEt_da, dEt_db){
+  e <-matrix(c(dEt_da, dEt_db))
+  e <- e/norm(e)
 }
 
 #########
