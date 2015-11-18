@@ -3,7 +3,7 @@
 # weights_a -> random inicial weights
 # weights_b -> random inicial weights
 # N is the total instance number
-error <- function(x=add_bias(x), Yd, weights_a, weights_b){
+first_phase <- function(x=add_bias(x), Yd, weights_a, weights_b){
   #calculate x*weights without bias, then sums the bias
   Zin <- add_bias(x) %*% t(weights_a)
   Z <- gauss(Zin)
@@ -14,6 +14,7 @@ error <- function(x=add_bias(x), Yd, weights_a, weights_b){
   list(Zin, Z, Yin, err, Y)
 }
 
+# melhorar essa função removendo as derivadas daqui
 grad <- function(x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b){
   #calculate new_b
   new_b=NULL
@@ -58,7 +59,7 @@ new_weight <- function(alpha, grad, old_weight){
 
 grad_norm <- function(dEt_da, dEt_db){
   e <-matrix(c(dEt_da, dEt_db))
-  e <- e/norm(e)
+  e <- norm(e)^2
 }
 
 #########
@@ -73,7 +74,33 @@ gauss<-function(x){
   exp(-(x^2)/2)
 }
 
-quad_err <- function(err){
-  1/2*(sum(err^2))
+quad_err <- function(err, sum_err){
+  1/2*(sum_err + err)^2
 }
 
+quad_err_grad <- function(alpha, dEt_da, dEt_db){
+  e <-matrix(c(dEt_da, dEt_db))
+  -1/2*alpha*norm(e)^2
+}
+
+rprop_test <- function(prevE_x, dEt_dx, prev_delta, weights_x){
+  delta_max <- 50
+  delta_min <- 0.000001
+  n_pos <- 1.2
+  n_neg <- 0.5
+
+  test_prevE_x <- prevE_x * dEt_dx
+
+  delta <- min((prev_delta * n_pos), delta_max)
+  delta_x <- sign(dEt_dx) * delta
+  weights_x[test_prevE_x >= 0] <- weights_x[test_prevE_x >= 0] + delta_x
+
+  delta <- max((prev_delta * n_neg), delta_min)
+  weights_x[test_prevE_x < 0] <- weights_x[test_prevE_x < 0] - prev_delta
+}
+
+sign<- function (matrix){
+  matrix[matrix < 0] <- -1
+  matrix[matrix > 0] <- 1
+  matrix
+}
