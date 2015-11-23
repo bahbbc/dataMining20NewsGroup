@@ -66,7 +66,7 @@ new_weight <- function(alpha, grad, old_weight){
 
 grad_norm <- function(dEt_da, dEt_db){
   e <-matrix(c(dEt_da, dEt_db))
-  e <- norm(e)^2
+  e <- e/norm(e)
 }
 
 #########

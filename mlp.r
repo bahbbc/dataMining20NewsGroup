@@ -110,14 +110,14 @@ mlp_tunned <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers, q, r){
     for(i in 1:dim(x)[1]){
       net_out <- first_phase(x[i,], Yd[i,], weights_a, weights_b)
       #saida: uma list (Zin, Z, Yin, err, Y)
+      err <- net_out[[4]]
+      En <- En + quad_err(err)
       #entradas: (x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b)
       new_weights <- grad(x[i,], net_out[[1]], net_out[[2]], net_out[[3]], net_out[[4]], dim(x)[1], alpha, weights_a, weights_b)
       #saida: uma list (new_a, new_b, dEt_da, dEt_db)
       weights_a <- new_weights[[1]]
       weights_b <- new_weights[[2]]
-      Y <- net_out[[5]][1]
-      err <- net_out[[4]]
-      En <- En + quad_err(err)
+      Y <- net_out[[5]]
 
       #tests to update alpha
       norm_grad = grad_norm(new_weights[[3]], new_weights[[4]])
@@ -130,7 +130,9 @@ mlp_tunned <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers, q, r){
         alpha <- r * alpha
         try_a <- new_weight(alpha, new_weights[[3]] , try_a)
         try_b <- new_weight(alpha, new_weights[[4]], try_b)
-        error_prov <- quad_err(first_phase(x[i,], Yd[i,], try_a, try_b)[[4]])
+        net_out_try <- first_phase(x[i,], Yd[i,], try_a, try_b)
+        error_prov <- quad_err(net_out_try[[4]])
+        Y <- net_out_try[[5]]
       }
       weights_a <- try_a
       weights_b <- try_b
