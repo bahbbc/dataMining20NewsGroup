@@ -20,14 +20,21 @@ grad <- function(x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b){
   new_b=NULL
   #uses de Et derivative in relation to b
   dEt_db <- 1/N*t(add_bias(Z)%*%(err*derivative_gaus(Yin)))
-  new_b <- rbind(new_b, new_weight_momentum(alpha, dEt_db, weights_b, 0.1))
+  new_b <- rbind(new_b, new_weight(alpha, dEt_db, weights_b))
 
 #calculate new_a
   new_a=NULL
   dEt_da <-t(add_bias(x)%*%(((err*derivative_gaus(Yin))%*%weights_b[,-dim(weights_a)[1]])*derivative_gaus(Zin)))
-  new_a <- rbind(new_a, new_weight_momentum(alpha, dEt_da, weights_a, 0.8))
+  new_a <- rbind(new_a, new_weight(alpha, dEt_da, weights_a))
 
   list(new_a, new_b, dEt_da, dEt_db)
+}
+
+# melhorar essa função removendo as derivadas daqui
+dEt_dx <- function(x, Zin, Z, Yin, err, N, weights_a, weights_b){
+  dEt_db <- 1/N*t(add_bias(Z)%*%(err*derivative_gaus(Yin)))
+  dEt_da <-t(add_bias(x)%*%(((err*derivative_gaus(Yin))%*%weights_b[,-dim(weights_a)[1]])*derivative_gaus(Zin)))
+  list(dEt_da, dEt_db)
 }
 
 #add initial weights as random numbers from 0 to 1 and all bias as 1
@@ -74,8 +81,8 @@ gauss<-function(x){
   exp(-(x^2)/2)
 }
 
-quad_err <- function(err, sum_err){
-  1/2*(sum_err + err)^2
+quad_err <- function(err){
+  1/2*(sum(err))^2
 }
 
 quad_err_grad <- function(alpha, dEt_da, dEt_db){
@@ -90,13 +97,21 @@ rprop_test <- function(prevE_x, dEt_dx, prev_delta, weights_x){
   n_neg <- 0.5
 
   test_prevE_x <- prevE_x * dEt_dx
+  #update delta for each matrix elem
+  temp <- (prev_delta * n_pos)
+  temp[temp > delta_max] <- delta_max
+  delta <- temp
 
-  delta <- min((prev_delta * n_pos), delta_max)
+  weights_x[test_prevE_x < 0] <- weights_x[test_prevE_x < 0] - prev_delta
   delta_x <- sign(dEt_dx) * delta
   weights_x[test_prevE_x >= 0] <- weights_x[test_prevE_x >= 0] + delta_x
 
-  delta <- max((prev_delta * n_neg), delta_min)
+  temp <- (prev_delta * n_neg)
+  temp[temp < delta_min] <- delta_min
   weights_x[test_prevE_x < 0] <- weights_x[test_prevE_x < 0] - prev_delta
+
+  print(paste("delta", delta))
+  list(weights_x, delta)
 }
 
 sign<- function (matrix){
