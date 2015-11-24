@@ -7,7 +7,7 @@ mlp_tunned <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers, q, r){
   weights_b <- random_weights(x[1,], dim(Yd)[2], hidden_layers+1)
   out = matrix(rep(0, length(x)), nrow=dim(Yd)[1], ncol=dim(Yd)[2])
   En_tot <- 0
-  
+
   while(err_tot >= max_err && epoch <= max_epoch){
     epoch = epoch + 1
     En <- 0
@@ -21,7 +21,7 @@ mlp_tunned <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers, q, r){
       #saida: uma list (new_a, new_b, dEt_da, dEt_db)
       weights_a <- new_weights[[1]]
       weights_b <- new_weights[[2]]
-      
+
       #tests to update alpha
       norm_grad = grad_norm(new_weights[[3]], new_weights[[4]])
       dEt_da <- matrix(norm_grad[1:length(weights_a)], nrow=dim(weights_a)[1], ncol=dim(weights_a)[2])
@@ -29,8 +29,9 @@ mlp_tunned <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers, q, r){
 
       try_a <- new_weight(alpha, dEt_da , weights_a)
       try_b <- new_weight(alpha, dEt_db, weights_b)
-      
+
       error_prov <- quad_err(first_phase(x[i,], Yd[i,], try_a, try_b)[[4]])
+
       while(error_prov > En){
         print(paste("New error",error_prov, "erro", En, "alpha", alpha))
         alpha <- r * alpha
@@ -45,11 +46,11 @@ mlp_tunned <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers, q, r){
       En <- error_prov
       En_tot <- En_tot + En
       alpha <- q * alpha
-      out[i,] = Y
+      out[i,] <- Y
     }
     err_tot <- En_tot/dim(x)[1]
     print("-----------------")
-    print(paste("Erro",err_tot, "I", epoch))
+    print(paste("Erro",err_tot, "I", epoch, "alpha", alpha))
   }
   out
 }
