@@ -56,10 +56,6 @@ derivative_gaus <- function(x){
   t(attr(eval(deriv(~exp(-(x^2)/2), "x")), 'gradient'))
 }
 
-new_weight_momentum <- function(alpha, grad, old_weight, m){
-  (old_weight - alpha * grad) + m * old_weight
-}
-
 new_weight <- function(alpha, grad, old_weight){
   old_weight - alpha * grad
 }
@@ -82,7 +78,7 @@ gauss<-function(x){
 }
 
 quad_err <- function(err){
-  1/2*(sum(err))^2
+  (1/2)*(sum(err^2))
 }
 
 quad_err_grad <- function(alpha, dEt_da, dEt_db){

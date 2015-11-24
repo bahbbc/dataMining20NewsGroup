@@ -1,4 +1,4 @@
-source('calc_grad.r')
+source('~/workspace/dataMining20NewsGroup/calc_grad.r')
 
 mlp <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers){
   epoch <- 0
@@ -11,19 +11,19 @@ mlp <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers){
     epoch = epoch + 1
     En <- 0
     for(i in 1:dim(x)[1]){
-      simple_error <- first_phase(x[i,], Yd[i,], weights_a, weights_b)
+      net_out <- first_phase(x[i,], Yd[i,], weights_a, weights_b)
+      Y <- net_out[[5]]
       #saida: uma list (Zin, Z, Yin, err, Y)
       #entradas: (x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b)
-      new_weights <- grad(x[i,], simple_error[[1]], simple_error[[2]], simple_error[[3]], simple_error[[4]], dim(x)[1], alpha, weights_a, weights_b)
+      new_weights <- grad(x[i,], net_out[[1]], net_out[[2]], net_out[[3]], net_out[[4]], dim(x)[1], alpha, weights_a, weights_b)
       #saida: uma list (new_a, new_b)
       weights_a <- new_weights[[1]]
       weights_b <- new_weights[[2]]
-      Y <- simple_error[[5]]
-      En <- En + quad_err(simple_error[[4]])
+      En <- En + quad_err(net_out[[4]])
       out[i,] = Y
     }
     err_tot <- En/dim(x)[1]
-    print(paste("Erro",err_tot, "I", epoch, "delta", delta))
+    print(paste("Erro",err_tot, "I", epoch))
   }
   list(out, weights_a, weights_b)
 }
