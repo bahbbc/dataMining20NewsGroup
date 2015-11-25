@@ -6,12 +6,12 @@
 first_phase <- function(x=add_bias(x), Yd, weights_a, weights_b){
   #calculate x*weights without bias, then sums the bias
   Zin <- add_bias(x) %*% t(weights_a)
-  Z <- gauss(Zin)
+  Z <- sigmoid(Zin)
   Yin <- add_bias(Z) %*% t(weights_b)
-  Y <-gauss(Yin)
+  Y <- sigmoid(Yin)
   err <- Y - Yd
 
-  list(Zin, Z, Yin, err, Y)
+  list(Zin=Zin, Z=Z, Yin=Yin, err=err, Y=Y)
 }
 
 # melhorar essa função removendo as derivadas daqui
@@ -19,12 +19,12 @@ grad <- function(x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b){
   #calculate new_b
   new_b=NULL
   #uses de Et derivative in relation to b
-  dEt_db <- 1/N*t(add_bias(Z)%*%(err*derivative_gaus(Yin)))
+  dEt_db <- 1/N*t(add_bias(Z)%*%(err*derivative(Yin)))
   new_b <- rbind(new_b, new_weight(alpha, dEt_db, weights_b))
 
 #calculate new_a
   new_a=NULL
-  dEt_da <-t(add_bias(x)%*%(((err*derivative_gaus(Yin))%*%weights_b[,-dim(weights_a)[1]])*derivative_gaus(Zin)))
+  dEt_da <-t(add_bias(x)%*%(((err*derivative(Yin))%*%weights_b[,-(dim(weights_a)[1]+1)])*derivative(Zin)))
   new_a <- rbind(new_a, new_weight(alpha, dEt_da, weights_a))
 
   list(new_a, new_b, dEt_da, dEt_db)
@@ -32,8 +32,8 @@ grad <- function(x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b){
 
 # melhorar essa função removendo as derivadas daqui
 dEt_dx <- function(x, Zin, Z, Yin, err, N, weights_a, weights_b){
-  dEt_db <- 1/N*t(add_bias(Z)%*%(err*derivative_gaus(Yin)))
-  dEt_da <-t(add_bias(x)%*%(((err*derivative_gaus(Yin))%*%weights_b[,-dim(weights_a)[1]])*derivative_gaus(Zin)))
+  dEt_db <- 1/N*t(add_bias(Z)%*%(err*derivative(Yin)))
+  dEt_da <-t(add_bias(x)%*%(((err*derivative(Yin))%*%weights_b[-(dim(weights_a)[1]+1)])*derivative(Zin)))
   list(dEt_da, dEt_db)
 }
 
