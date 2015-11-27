@@ -7,8 +7,9 @@ mlp_tunned <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers, r, q){
   weights_b <- random_weights(x[1,], dim(Yd)[2], hidden_layers+1)
   out = matrix(rep(0, length(x)), nrow=dim(Yd)[1], ncol=dim(Yd)[2])
   En_tot <- 0
+  gl <- 0
   
-  while(err_tot >= max_err && epoch <= max_epoch){
+  while(err_tot >= max_err && epoch <= max_epoch && gl > 70 ){
     epoch = epoch + 1
     En_tot <- 0
     for(i in 1:dim(x)[1]){
@@ -30,7 +31,7 @@ mlp_tunned <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers, r, q){
       try_a <- new_weight(alpha, dEt_da , weights_a)
       try_b <- new_weight(alpha, dEt_db, weights_b)
       
-      error_prov <- quad_err(first_phase(x[i,], Yd[i,], try_a, try_b)[[4]])
+      error_prov <- quad_err(first_phase(x[i,], Yd[i,], try_a, try_b)$err)
       while(error_prov > En){
         print(paste("New error",error_prov, "erro", En, "alpha", alpha))
         alpha <- r * alpha
@@ -45,11 +46,16 @@ mlp_tunned <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers, r, q){
       weights_b <- try_b
       En <- error_prov
       En_tot <- En_tot + En
+      net_out_val_error <- first_phase(validation[i,], Yd[i,], weights_a, weights_b)
+      val_e_tot <- quad_err(net_out_val_error) + val_e_tot
       #alpha <- q * alpha
       out[i,] = Y
       print(paste("Erro",err_tot, "I", epoch, "alpha", alpha))
     }
     err_tot <- En_tot/dim(x)[1]
+    val_error_tot <- val_error_tot/dim(x)[1]
+    min_val_error <- min(val_error_tot, min_val_error)
+    gl <- 100*((val_error_tot/min_val_error)-1)
     print(paste("Erro",err_tot, "I", epoch, "alpha", alpha))
   }
   out

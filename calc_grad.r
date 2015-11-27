@@ -19,7 +19,7 @@ grad <- function(x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b){
   #calculate new_b
   new_b=NULL
   #uses de Et derivative in relation to b
-  dEt_db <- 1/N*t(add_bias(Z)%*%(err*derivative(Yin)))
+  dEt_db <- (1/N)*t(add_bias(Z)%*%(err*derivative(Yin)))
   new_b <- rbind(new_b, new_weight(alpha, dEt_db, weights_b))
 
 #calculate new_a
