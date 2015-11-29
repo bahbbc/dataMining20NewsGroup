@@ -8,10 +8,10 @@ first_phase <- function(x=add_bias(x), Yd, weights_a, weights_b){
   Zin <- add_bias(x) %*% t(weights_a)
   Z <- sigmoid(Zin)
   Yin <- add_bias(Z) %*% t(weights_b)
-  Y <- sigmoid(Yin)
-  err <- Y - Yd
+  #Y <- sigmoid(Yin)
+  err <- Yin - Yd
 
-  list(Zin=Zin, Z=Z, Yin=Yin, err=err, Y=Y)
+  list(Zin=Zin, Z=Z, Yin=Yin, err=err, Y=Yin)
 }
 
 # melhorar essa função removendo as derivadas daqui
@@ -19,7 +19,7 @@ grad <- function(x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b){
   #calculate new_b
   new_b=NULL
   #uses de Et derivative in relation to b
-  dEt_db <- (1/N)*t(add_bias(Z)%*%(err*derivative(Yin)))
+  #dEt_db <- t(add_bias(Z)%*%(err*derivative(Yin)))
   new_b <- rbind(new_b, new_weight(alpha, dEt_db, weights_b))
 
 #calculate new_a
@@ -32,7 +32,7 @@ grad <- function(x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b){
 
 # melhorar essa função removendo as derivadas daqui
 dEt_dx <- function(x, Zin, Z, Yin, err, N, weights_a, weights_b){
-  dEt_db <- 1/N*t(add_bias(Z)%*%(err*derivative(Yin)))
+  dEt_db <- t(add_bias(Z)%*%(err*derivative(Yin)))
   dEt_da <-t(add_bias(x)%*%(((err*derivative(Yin))%*%weights_b[-(dim(weights_a)[1]+1)])*derivative(Zin)))
   list(dEt_da, dEt_db)
 }
@@ -61,8 +61,8 @@ new_weight <- function(alpha, grad, old_weight){
 }
 
 grad_norm <- function(dEt_da, dEt_db){
-  e <-matrix(c(dEt_da, dEt_db))
-  e <- e/norm(e)
+  e <-matrix(c(dEt_da, dEt_db), byrow = TRUE)
+  e <- e/norm(e, type="2")
 }
 
 #########

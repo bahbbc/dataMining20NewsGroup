@@ -13,10 +13,10 @@ mlp <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers){
     for(i in 1:dim(x)[1]){
       net_out <- first_phase(x[i,], Yd[i,], weights_a, weights_b)
       #saida: uma list (Zin, Z, Yin, err, Y)
-      Y <- net_out[[5]]
-      En <- En + quad_err(net_out[[4]])
+      Y <- net_out$Y
+      En <- En + quad_err(net_out$err)
       #entradas: (x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b)
-      new_weights <- grad(x[i,], net_out[[1]], net_out[[2]], net_out[[3]], net_out[[4]], dim(x)[1], alpha, weights_a, weights_b)
+      new_weights <- grad(x[i,], net_out$Zin, net_out$Z, net_out$Yin, net_out$err, dim(x)[1], alpha, weights_a, weights_b)
       #saida: uma list (new_a, new_b)
       weights_a <- new_weights[[1]]
       weights_b <- new_weights[[2]]
