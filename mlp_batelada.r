@@ -39,14 +39,12 @@ mlp_batelada <- function(max_epoch, x, Yd, alpha, hidden_layers){
     error_prov <- quad_err(net_out_try$err)/dim(x)[1]
     
     while(error_prov > En){
-      print(paste("New error",error_prov, "erro", En, "alpha", alpha))
       alpha <- r * alpha
       try_a <- new_weight(alpha, dEt_da, weights_a)
       try_b <- new_weight(alpha, dEt_db, weights_b)
       net_out_try <- first_phase(x, Yd, try_a, try_b)
       error_prov <- quad_err(net_out_try$err)/dim(x)[1]
       Y <- net_out_try$Yin
-      print("-----------------")
     }
     weights_a <- try_a
     weights_b <- try_b
