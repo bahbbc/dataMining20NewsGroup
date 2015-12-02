@@ -1,6 +1,6 @@
 source('~/workspace/dataMining20NewsGroup/calc_grad.r')
 
-mlp_tunned <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers, r, q){
+mlp_tunned <- function(max_err, max_epoch, x, Yd, validation, validationYd, alpha, hidden_layers, r, q){
   epoch <- 0
   err_tot <- 999
   weights_a <- random_weights(x[1,], hidden_layers, length(x[1,])+1)
@@ -46,7 +46,7 @@ mlp_tunned <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers, r, q){
       weights_b <- try_b
       En <- error_prov
       En_tot <- En_tot + En
-      net_out_val_error <- first_phase(validation[i,], Yd[i,], weights_a, weights_b)
+      net_out_val_error <- first_phase(validation, validationYd, weights_a, weights_b)
       val_e_tot <- quad_err(net_out_val_error) + val_e_tot
       #alpha <- q * alpha
       out[i,] = Y

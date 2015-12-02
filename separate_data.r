@@ -25,7 +25,7 @@ remove_class <- function(data){
 binary_class <- function(class_data){
   class_data <- as.vector(unlist(class_data))
   classes <- unlist(unique(class_data))
-  class_matrix<- class_data
+  class_matrix <- class_data
   for (class in 1:length(classes)){
     binary_class <- rep(0, length(classes))
     binary_class[class] <- 1
@@ -34,5 +34,5 @@ binary_class <- function(class_data){
     class_matrix <- gsub(classes[class], binary_class, class_matrix)
   }
   #transforms all the strings to an integer matrix
-  matrix(as.integer(unlist(strsplit(class_matrix, ""))), nrow=length(class_data), ncol=length(classes))
+  matrix(as.integer(unlist(strsplit(class_matrix, ""))), nrow=length(class_data), ncol=length(classes), byrow=TRUE)
 }
