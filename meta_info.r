@@ -8,12 +8,16 @@ o_freq <- sort(freq, decreasing=TRUE)
 length(freq) #346_902 sem corte
 wf <- data.frame(word=names(o_freq), freq=o_freq)
 
-#gráfico de barras que mostra o termo e sua frequencia no copus
+# gráfico de barras que mostra o termo e sua frequencia no copus
 library(ggplot2)
-p <- ggplot(subset(wf, o_freq), aes(word, freq))
+p <- ggplot(subset(wf, freq > 60), aes(word, freq))
 p <- p + geom_bar(stat="identity")
 p <- p + theme(axis.text.x=element_text(angle=45, hjust=1))
 p
+
+# gráfico que mostra as freq. mais comuns
+plot(table(freq[freq > 15]))
+
 
 #gráfico de bolinhas que mostra a frequencia dos termos no corpus (Zipft)
 plot(wf$freq)
