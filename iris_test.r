@@ -1,22 +1,26 @@
+library(Matrix)
 source('~/workspace/dataMining20NewsGroup/separate_data.r')
 source('~/workspace/dataMining20NewsGroup/mlp_batelada.r')
 
-total_data <- separate_data(tf_idf_reduced)
+matrix_reduced <- cbind(t(tf_idf_matrix), 1:18846)
+classes <- binary_class(classes)
+classes <- cbind(classes, 1:18846)
+
+total_data <- separate_data(matrix_reduced)
 test_data <- total_data$test
 validation_data <- total_data$validation
 training_data <- total_data$training
 
-validation_data <- remove_class(validation_data)
-validationYd <- validation_data$class
-validationx <- validation_data$attributes
-validationx <- matrix(unlist(validationx), ncol= dim(validationx)[2], byrow=TRUE)
-validationYd <- binary_class(validationYd)
+# compares the class identificator with the attributes identificator.
+validationYd <- classes[intersect(validation_data[,dim(validation_data)[2]], classes),]
+# removes both identificators
+validationYd <- validationYd[,-dim(validationYd)[2]]
+validationx <- Matrix(validation_data[,-dim(validation_data)[2]], sparse = TRUE)
 
-training_data <- remove_class(training_data)
-trainingYd <- training_data$class
-trainingx <- training_data$attributes
-trainingx <- matrix(unlist(trainingx), ncol= dim(trainingx)[2], byrow=TRUE)
-trainingYd <- binary_class(trainingYd)
+trainingYd <- classes[intersect(training_data[,dim(training_data)[2]], classes[,21]),]
+# removes both identificators
+trainingYd <- trainingYd[,-dim(trainingYd)[2]]
+trainingx <- Matrix(training_data[,-dim(training_data)[2]], sparse = TRUE)
 
 test <-mlp_batelada(100000, trainingx, trainingYd, validationx, validationYd, 5, (2*dim(trainingYd)[2]+1))
 
