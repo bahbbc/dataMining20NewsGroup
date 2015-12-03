@@ -4,11 +4,11 @@ source('~/workspace/dataMining20NewsGroup/calc_grad_batelada.r')
 
 mlp_batelada <- function(max_epoch, x, Yd, validation, validationYd, alpha, hidden_layers){
   epoch <- 0
-  weights_a <- random_weights(x[1,], hidden_layers, length(x[1,])+1)
-  weights_b <- random_weights(x[1,], dim(Yd)[2], hidden_layers+1)
+  weights_a <- random_weights(hidden_layers, length(x[1,])+1)
+  weights_b <- random_weights(dim(Yd)[2], hidden_layers+1)
   #weights_a <- matrix(c(0.25),nrow = 2,ncol=3)
   #weights_b <- matrix(c(0.25), nrow = 1, ncol=3)
-  out = matrix(rep(0, length(x)), nrow=dim(Yd)[1], ncol=dim(Yd)[2])
+  out = matrix(rep(0, dim(Yd)[1]), nrow=dim(Yd)[1], ncol=dim(Yd)[2])
   max_err <- 1e-5;
   r <- 0.5
   q <- 2
