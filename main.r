@@ -23,15 +23,11 @@ stemmed_files <- stemming(tokenized_text, c())
 print("Matriz TF-IDF! -- Isso pode demorar um pouco...")
 b_matrix <- binary_matrix(stemmed_files)
 tf_matrix <- tf_matrix(stemmed_files)
+
 # soma as linhas da matrix binaria para obter todos os docs de um termo
-idf <- log(18846/rowSums(binary_matrix[[1]]))
+idf <- log(18846/rowSums(b_matrix[[1]]))
 tf_idf_matrix <- tf_matrix[[1]] * idf
 
-#corpus <- Corpus(VectorSource(stemmed_files))
-#tf_idf_test <- DocumentTermMatrix(corpus,control = list(bounds = list(global = c(5, 50))))
-#tf_idf <- TermDocumentMatrix(corpus, control = list(bounds = list(global = c(5, 70)), removePunctuation = TRUE, stopwords = TRUE, removeNumbers= TRUE))
-#tf_idf <- TermDocumentMatrix(corpus)
-
 #tf_idf_reduced <- removeSparseTerms(tf_idf, 0.9995) # This makes a matrix that is 99.6% empty space, maximum. Remove termos pouco frequentes do corpus.
-rm(list=(c('corpus', 'file_names', 'stemmed_files', 'tokenized_text')))
+rm(list=(c('file_names', 'stemmed_files', 'tokenized_text')))
 gc()
