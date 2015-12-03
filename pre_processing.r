@@ -11,12 +11,19 @@ tokenizing <- function(original_files, concatenated_files){
   for (file in original_files){
     text <-readLines(file, encoding="latin1")
     
+    
     #finds where the number of lines are in the file
     nLine_line <- grep("Lines", text)
     final_line <- as.integer(sub("Lines: ", "", text[nLine_line]))
-    header_line <- length(text) - final_line
-    #removes the meta-info headers
-    text <- text[header_line:final_line]
+    #threads the 'dog' case
+    if(is.na(final_line[1])){
+      final_line <- 26
+    }
+    if(final_line < length(text)){
+      header_line <- length(text) - final_line
+      #removes the meta-info headers
+      text <- text[header_line:final_line]
+    }
     
     #removes replies
     replied_lines <- grep("^>", text)
@@ -25,7 +32,7 @@ tokenizing <- function(original_files, concatenated_files){
     }
 
     #change the list to an array with all the chars
-    formatted_text = paste(unlist(text), collapse='')
+    formatted_text = paste(unlist(text), collapse=' ')
     #Tokenizing
     #lower case all strings AND replacwith 'D'
     formatted_text = gsub("[0-9]", " ", tolower(formatted_text))
@@ -55,10 +62,11 @@ remove_stop_words <- function(vectorized_text){
     'also','get','go','goes','just','made','make','put','see','seen','whether','like','well','back','even','still','way','take','since','another',
     'however','two','three','four','five','first','second','new','old','high','long','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o',
     'p','q','r','s','t','u','v','x','w','y','z','re',"","ll","co","uk","subject", "edu","therefore", "fromyour", "himto", "com", "write", "post", "article",
-    "from", "lines", "organization", "summary", "keywords", "writing")
+    "from", "lines", "organization", "summary", "keywords", "writing", "\"")
   removed_stop_words = match(vectorized_text, english_stop_words)
   #Words removed will have a match in the array, words that does not appear will always be NA.
   remaning_words = vectorized_text[is.na(removed_stop_words)]
+  remaning_words
 }
 
 #Stemmer e StopWords
