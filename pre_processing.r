@@ -9,7 +9,20 @@ getClasses <- function(original_files){
 tokenizing <- function(original_files, concatenated_files){
   # if the merged dataset does exist, append to it
   for (file in original_files){
-    text <-read.table(file, sep="\n", quote="", header=FALSE, stringsAsFactors=FALSE, fileEncoding="latin1")
+    text <-readLines(file, encoding="latin1")
+    
+    #finds where the number of lines are in the file
+    nLine_line <- grep("Lines", text)
+    final_line <- as.integer(sub("Lines: ", "", text[nLine_line]))
+    header_line <- length(text) - final_line
+    #removes the meta-info headers
+    text <- text[header_line:final_line]
+    
+    #removes replies
+    replied_lines <- grep("^>", text)
+    if(length(replied_lines) > 0){
+      text <- text[-replied_lines]
+    }
 
     #change the list to an array with all the chars
     formatted_text = paste(unlist(text), collapse='')
