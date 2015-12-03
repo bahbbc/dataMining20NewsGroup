@@ -16,8 +16,8 @@ separate_data <- function(data){
 }
 
 remove_class <- function(data){
-  attributes <- data[-dim(data)[2]]
-  class <- data[dim(data)[2]]
+  attributes <- data[,-dim(data)[2]]
+  class <- data[,-dim(data)[2]]
 
   list(attributes=attributes, class=class)
 }

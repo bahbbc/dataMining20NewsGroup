@@ -42,7 +42,7 @@ remove_stop_words <- function(vectorized_text){
     'also','get','go','goes','just','made','make','put','see','seen','whether','like','well','back','even','still','way','take','since','another',
     'however','two','three','four','five','first','second','new','old','high','long','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o',
     'p','q','r','s','t','u','v','x','w','y','z','re',"","ll","co","uk","subject", "edu","therefore", "fromyour", "himto", "com", "write", "post", "article",
-    "from", "lines", "organization", "summary", "keywords")
+    "from", "lines", "organization", "summary", "keywords", "writing")
   removed_stop_words = match(vectorized_text, english_stop_words)
   #Words removed will have a match in the array, words that does not appear will always be NA.
   remaning_words = vectorized_text[is.na(removed_stop_words)]

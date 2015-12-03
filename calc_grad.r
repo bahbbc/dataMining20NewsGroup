@@ -38,7 +38,7 @@ dEt_dx <- function(x, Zin, Z, Yin, err, N, weights_a, weights_b){
 }
 
 #add initial weights as random numbers from 0 to 1 and all bias as 1
-random_weights <-function(x, nrow, ncol){
+random_weights <-function(nrow, ncol){
   weights <- runif((nrow)*ncol, 0, 1)
   weights <- matrix(weights, nrow=nrow, ncol=ncol)
 }
@@ -61,8 +61,8 @@ new_weight <- function(alpha, grad, old_weight){
 }
 
 grad_norm <- function(dEt_da, dEt_db){
-  e <-matrix(c(dEt_da, dEt_db), byrow = TRUE)
-  e <- e/norm(e, type="2")
+  e <-Matrix(c(dEt_da, dEt_db), byrow = TRUE)
+  e <- e/norm(e, type="M")
 }
 
 #########
