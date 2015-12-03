@@ -26,10 +26,10 @@ tokenizing <- function(original_files, concatenated_files){
     }
     
     #removes replies
-    replied_lines <- grep("^>", text)
-    if(length(replied_lines) > 0){
-      text <- text[-replied_lines]
-    }
+    #replied_lines <- grep("^>", text)
+    #if(length(replied_lines) > 0){
+    #  text <- text[-replied_lines]
+    #}
 
     #change the list to an array with all the chars
     formatted_text = paste(unlist(text), collapse=' ')
