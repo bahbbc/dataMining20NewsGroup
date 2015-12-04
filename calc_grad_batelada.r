@@ -29,7 +29,7 @@ grad <- function(x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b){
 # melhorar essa função removendo as derivadas daqui
 dEt_dx_bat <- function(x, Zin, Z, err, weights_a, weights_b){
   dEt_db <- t(err) %*% add_bias(Z)
-  dEt_da <-t(((err %*% weights_b[,-(dim(weights_a)[1]+1)]) * (1 - Z) * Z)) %*% add_bias(x)
+  dEt_da <- t(((err %*% weights_b[,-(dim(weights_a)[1]+1)]) * (1 - Z) * Z)) %*% add_bias(x) 
   list(dEt_da, dEt_db)
 }
 

@@ -11,7 +11,7 @@ mlp_batelada <- function(max_epoch, x, Yd, validation, validationYd, alpha, hidd
   out = matrix(rep(0, dim(Yd)[1]), nrow=dim(Yd)[1], ncol=dim(Yd)[2])
   max_err <- 1e-5;
   r <- 0.5
-  q <- 2
+  q <- 5
   gl <- 0
   min_val_error <- 999
   error_vec <- 0.7
@@ -25,7 +25,7 @@ mlp_batelada <- function(max_epoch, x, Yd, validation, validationYd, alpha, hidd
     
     net_out <- first_phase(x, Yd, weights_a, weights_b)
     Y <- net_out$Yin
-    #entradas: (x, Zin, Z, Yin, err, N, weights_a, weights_b)
+    #entradas: (x, Zin, Z, err, weights_a, weights_b)
     der <- dEt_dx_bat(x, net_out$Zin, net_out$Z, net_out$err, weights_a, weights_b)
     #saida: uma list (dEt_da, dEt_db)
     dEt_da <- der[[1]]

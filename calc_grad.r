@@ -31,7 +31,7 @@ grad <- function(x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b){
 }
 
 # melhorar essa função removendo as derivadas daqui
-dEt_dx <- function(x, Zin, Z, Yin, err, N, weights_a, weights_b){
+dEt_dx <- function(x, Zin, Z, Yin, err, weights_a, weights_b){
   dEt_db <- t(add_bias(Z)%*%(err*derivative(Yin)))
   dEt_da <-t(add_bias(x)%*%(((err*derivative(Yin))%*%weights_b[-(dim(weights_a)[1]+1)])*derivative(Zin)))
   list(dEt_da, dEt_db)
@@ -61,7 +61,7 @@ new_weight <- function(alpha, grad, old_weight){
 }
 
 grad_norm <- function(dEt_da, dEt_db){
-  e <-Matrix(c(dEt_da, dEt_db), byrow = TRUE)
+  e <- matrix(c(as.matrix(dEt_da), as.matrix(dEt_db)), byrow = TRUE)
   e <- e/norm(e, type="M")
 }
 
