@@ -1,5 +1,10 @@
-source('~/workspace/dataMining20NewsGroup/calc_grad.r')
+source('~/workspace/dataMining20NewsGroup/helper_functions.r')
 
+# x -> entries
+# Yd -> desired result
+# weights_a -> random inicial weights
+# weights_b -> random inicial weights
+# N is the total instance number
 first_phase <- function(x, Yd, weights_a, weights_b){
   #calculate x*weights without bias, then sums the bias
   Zin <- add_bias(x) %*% t(weights_a)
