@@ -32,9 +32,10 @@ freq <- freq[freq > 60] # mudar aqui termos menos frequentes
 freq <- freq[freq < 2000] # mudar aqui termos mais frequentes
 
 tf_matrix <- tf_matrix[[1]][freq,]
+reduced_b_matrix <- b_matrix[[1]][freq,]
 
 # soma as linhas da matrix binaria para obter todos os docs de um termo
-idf <- log(18846/rowSums(b_matrix[[1]]))
+idf <- log(18846/rowSums(reduced_b_matrix))
 tf_idf_matrix <- tf_matrix * idf
 
 # faz o tf_idf normalizado
