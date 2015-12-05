@@ -1,51 +1,7 @@
-# x -> entries
-# Yd -> desired result
-# weights_a -> random inicial weights
-# weights_b -> random inicial weights
-# N is the total instance number
-first_phase <- function(x=add_bias(x), Yd, weights_a, weights_b){
-  #calculate x*weights without bias, then sums the bias
-  Zin <- add_bias(x) %*% t(weights_a)
-  Z <- sigmoid(Zin)
-  Yin <- add_bias(Z) %*% t(weights_b)
-  #Y <- sigmoid(Yin)
-  err <- Yin - Yd
-
-  list(Zin=Zin, Z=Z, Yin=Yin, err=err, Y=Yin)
-}
-
-# melhorar essa função removendo as derivadas daqui
-grad <- function(x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b){
-  #calculate new_b
-  new_b=NULL
-  #uses de Et derivative in relation to b
-  #dEt_db <- t(add_bias(Z)%*%(err*derivative(Yin)))
-  new_b <- rbind(new_b, new_weight(alpha, dEt_db, weights_b))
-
-#calculate new_a
-  new_a=NULL
-  dEt_da <-t(add_bias(x)%*%(((err*derivative(Yin))%*%weights_b[,-(dim(weights_a)[1]+1)])*derivative(Zin)))
-  new_a <- rbind(new_a, new_weight(alpha, dEt_da, weights_a))
-
-  list(new_a, new_b, dEt_da, dEt_db)
-}
-
-# melhorar essa função removendo as derivadas daqui
-dEt_dx <- function(x, Zin, Z, Yin, err, weights_a, weights_b){
-  dEt_db <- t(add_bias(Z)%*%(err*derivative(Yin)))
-  dEt_da <-t(add_bias(x)%*%(((err*derivative(Yin))%*%weights_b[-(dim(weights_a)[1]+1)])*derivative(Zin)))
-  list(dEt_da, dEt_db)
-}
-
 #add initial weights as random numbers from 0 to 1 and all bias as 1
 random_weights <-function(nrow, ncol){
   weights <- runif((nrow)*ncol, 0, 1)
   weights <- matrix(weights, nrow=nrow, ncol=ncol)
-}
-
-# just adds a 1 col for the bias
-add_bias <-function(x){
-  c(x, 1)
 }
 
 derivative <- function(x){
@@ -62,8 +18,10 @@ new_weight <- function(alpha, grad, old_weight){
 
 grad_norm <- function(dEt_da, dEt_db){
   e <- matrix(c(as.matrix(dEt_da), as.matrix(dEt_db)), byrow = TRUE)
-  e <- e/norm(e, type="M")
+  e <- e/norm_vec(e)
 }
+
+norm_vec <- function(x) sqrt(sum(x^2))
 
 #########
 ### Activation functions
@@ -78,7 +36,7 @@ gauss<-function(x){
 }
 
 quad_err <- function(err){
-  (1/2)*(sum(err^2))
+  sum(err * err)
 }
 
 quad_err_grad <- function(alpha, dEt_da, dEt_db){
