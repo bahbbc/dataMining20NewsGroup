@@ -23,6 +23,8 @@ grad_norm <- function(dEt_da, dEt_db){
 
 norm_vec <- function(x) sqrt(sum(x^2))
 
+norm_row <- function(x) sqrt(rowSums(x^2))
+
 #########
 ### Activation functions
 ##########
