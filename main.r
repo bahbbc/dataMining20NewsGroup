@@ -28,8 +28,8 @@ tf_matrix <- tf_matrix(stemmed_files)
 
 #remove termos mais e menos frequentes
 freq <- rowSums(tf_matrix[[1]])
-freq <- freq[freq > 60] # mudar aqui termos menos frequentes
-freq <- freq[freq < 2000] # mudar aqui termos mais frequentes
+freq <- freq[freq > 20] # mudar aqui termos menos frequentes
+freq <- freq[freq < 1500] # mudar aqui termos mais frequentes
 
 tf_matrix <- tf_matrix[[1]][freq,]
 reduced_b_matrix <- b_matrix[[1]][freq,]
@@ -38,8 +38,14 @@ reduced_b_matrix <- b_matrix[[1]][freq,]
 idf <- log(18846/rowSums(reduced_b_matrix))
 tf_idf_matrix <- tf_matrix * idf
 
+writeMM(tf_idf_matrix, "tf_idf.mtx")
+#str(tf_idf <- readMM("~/tf_idf.mtx"))
+
 # faz o tf_idf normalizado
 tf_idf_norm <- tf_idf_matrix/sqrt(rowSums(tf_idf_matrix)^2)
+
+writeMM(tf_idf_norm, "tf_idf.mtx")
+#str(tf_idf_norm <- readMM("~/tf_idf_norm.mtx"))
 
 #tf_idf_reduced <- removeSparseTerms(tf_idf, 0.9995) # This makes a matrix that is 99.6% empty space, maximum. Remove termos pouco frequentes do corpus.
 rm(list=(c('file_names', 'stemmed_files', 'tokenized_text')))

@@ -1,4 +1,5 @@
-source('~/workspace/dataMining20NewsGroup/calc_grad.r')
+source('~/workspace/dataMining20NewsGroup/helper_functions,r')
+source('~/workspace/dataMining20NewsGroup/calc_grad_batelada.r')
 
 mlp <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers){
   epoch <- 0
@@ -10,21 +11,18 @@ mlp <- function(max_err, max_epoch, x, Yd, alpha, hidden_layers){
   while(err_tot >= max_err && epoch <= max_epoch){
     epoch = epoch + 1
     En <- 0
-    for(i in 1:dim(x)[1]){
-      net_out <- first_phase(x[i,], Yd[i,], weights_a, weights_b)
-      #saida: uma list (Zin, Z, Yin, err, Y)
-      Y <- net_out$Y
-      En <- En + quad_err(net_out$err)
-      #entradas: (x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b)
-      new_weights <- grad(x[i,], net_out$Zin, net_out$Z, net_out$Yin, net_out$err, dim(x)[1], alpha, weights_a, weights_b)
-      #saida: uma list (new_a, new_b)
-      weights_a <- new_weights[[1]]
-      weights_b <- new_weights[[2]]
-      
-      out[i,] = Y
-    }
-    err_tot <- En/dim(x)[1]
-    print(paste("Erro",err_tot, "I", epoch))
+    net_out <- first_phase(x, Yd, weights_a, weights_b)
+    #saida: uma list (Zin, Z, Yin, err, Y)
+    Y <- net_out$Yin
+    #entradas: (x, Zin, Z, Yin, err, N, alpha, weights_a, weights_b)
+    der <- dEt_dx_bat(x, Yd, weights_a, weights_b)
+    #saida: uma list (new_a, new_b)
+    weights_a <- new_weights[[1]]
+    weights_b <- new_weights[[2]]
+    
+    out[i,] = Y
+    En <- append(quad_err(net_out$err)/dim(x)[1])
+    print(paste("Erro", En, "I", epoch))
   }
   list(out, weights_a, weights_b)
 }

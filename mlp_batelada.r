@@ -6,12 +6,12 @@ mlp_batelada <- function(max_epoch, x, Yd, validation, validationYd, alpha, hidd
   epoch <- 0
   weights_a <- random_weights(hidden_layers, length(x[1,])+1)
   weights_b <- random_weights(dim(Yd)[2], hidden_layers+1)
-  #weights_a <- matrix(c(0),nrow = 3, ncol=5)
-  #weights_b <- matrix(c(0), nrow = 3, ncol=4)
+  #weights_a <- matrix(c(0.25),nrow = 3, ncol=5)
+  #weights_b <- matrix(c(0.25), nrow = 3, ncol=4)
   out = matrix(rep(0, dim(Yd)[1]), nrow=dim(Yd)[1], ncol=dim(Yd)[2])
   max_err <- 1e-5;
-  r <- 0.5
-  q <- 5
+  r <- 0.9
+  q <- 10
   gl <- 0
   min_val_error <- 999
   error_val <- NULL
@@ -20,7 +20,7 @@ mlp_batelada <- function(max_epoch, x, Yd, validation, validationYd, alpha, hidd
   En <- quad_err(net_out$err)/dim(x)[1]
   error_vec <- c(En)
   
-  while(En >= max_err && epoch < max_epoch && gl < 70){
+  while(En >= max_err && epoch < max_epoch){
     epoch = epoch + 1
     
     #entradas: (x, Zin, Z, err, weights_a, weights_b)
@@ -40,16 +40,16 @@ mlp_batelada <- function(max_epoch, x, Yd, validation, validationYd, alpha, hidd
     Y <- net_out_try$Yin
     error_prov <- quad_err(net_out_try$err)/dim(x)[1]
     
-    while(error_prov > En){
-      alpha <- alpha * r
+    #while(error_prov > En){
+    #  alpha <- alpha * r
       
-      try_a <- new_weight(alpha, dEt_da, weights_a)
-      try_b <- new_weight(alpha, dEt_db, weights_b)
+    #  try_a <- new_weight(alpha, dEt_da, weights_a)
+    #  try_b <- new_weight(alpha, dEt_db, weights_b)
       
-      net_out_try <- first_phase(x, Yd, try_a, try_b)
-      error_prov <- quad_err(net_out_try$err)/dim(x)[1]
-      Y <- net_out_try$Yin
-    }
+    #  net_out_try <- first_phase(x, Yd, try_a, try_b)
+    #  error_prov <- quad_err(net_out_try$err)/dim(x)[1]
+    #  Y <- net_out_try$Yin
+    #}
     weights_a <- try_a
     weights_b <- try_b
     net_out_val_error <- first_phase(validation, validationYd, weights_a, weights_b)$err
@@ -61,7 +61,7 @@ mlp_batelada <- function(max_epoch, x, Yd, validation, validationYd, alpha, hidd
     print(paste("Erro",error_prov, "I", epoch, "alpha", alpha, "GL", gl))
     En <- error_prov
     error_vec <- append(error_vec, En)
-    alpha <- q * alpha
+    #alpha <- q * alpha
     out = Y
     
   }

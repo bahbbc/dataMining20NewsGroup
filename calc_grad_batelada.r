@@ -20,7 +20,7 @@ dEt_dx_bat <- function(x, Yd, weights_a, weights_b){
   out <- first_phase(x, Yd, weights_a, weights_b)
   
   dEt_db <- t(out$err) %*% add_bias(out$Z)
-  dEt_da <- t(((out$err %*% weights_b[,1:(dim(weights_a)[1])]) * (1 - out$Z) * out$Z)) %*% add_bias(x) 
+  dEt_da <- t(out$err %*% weights_b[,1:(dim(weights_a)[1])] * (1 - out$Z) * out$Z) %*% add_bias(x) 
   list(dEt_da, dEt_db)
 }
 

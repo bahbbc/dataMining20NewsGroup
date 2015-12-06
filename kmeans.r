@@ -13,11 +13,12 @@ my_kmeans <- function(data, k, error){
   
   #calculate each element distance to the centroid
   
- 
   centroid_stabilized <- 999
   epoch = 0
-  # while old_centroids = new_centroids
-  while(centroid_stabilized > error){
+  
+  all_c_have_elements = TRUE
+  # while old_centroids - new_centroids > error AND all centroids have elements
+  while(centroid_stabilized > error && all_have_elements){
     epoch <- epoch + 1
     #using euclidian distance
     #euclidian <- t(t(elements) - centroids)
@@ -32,6 +33,9 @@ my_kmeans <- function(data, k, error){
     for(i in 1:k){
       cluster_elem <- which(shortest_distance == i)
       new_centroids <- rbind(new_centroids, colSums(data[cluster_elem,])/length(cluster_elem))
+    }
+    if(cluster_elem[cluster_elem != 0]){
+      all_have_elements = FALSE
     }
     old_centroids <- centroids
     centroids <- new_centroids

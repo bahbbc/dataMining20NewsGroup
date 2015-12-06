@@ -11,19 +11,6 @@ tf <- function(term, document){
   term_frequency = document_frequency[term_position, ]$Freq
 }
 
-tf_idf <- function(corpus, final_matrix){
-  words  = unlist(strsplit(corpus, ' '))
-  all_terms = table(words)
-  names(all_terms)
-  n_doc = length(corpus)
-
-  for(document in corpus){
-    for(term in all_terms){
-      tf(term, document) * log(idf(term, corpus))
-    }
-  }
-}
-
 find_binary_terms <- function(document, all_terms){
   doc_terms <- split_terms(document)
   doc_terms_in_all_terms <- match(all_terms, doc_terms)
@@ -69,9 +56,4 @@ split_terms <- function(char_vector){
   unlist(strsplit(char_vector, " "))
 }
 
-
-idf <- function(term, corpus){
-  #nro de documenttos / documentos em que o termo aparece
-  log(ndoc/docs(term))
-}
 

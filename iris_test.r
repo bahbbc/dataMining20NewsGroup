@@ -22,7 +22,7 @@ trainingYd <- classes[intersect(training_data[,dim(training_data)[2]], classes[,
 trainingYd <- trainingYd[,-dim(trainingYd)[2]]
 trainingx <- Matrix(training_data[,-dim(training_data)[2]], sparse = TRUE)
 
-test <-mlp_batelada(100000, trainingx, trainingYd, validationx, validationYd, 5, (2*dim(trainingYd)[2]+1))
-
+test <-mlp_batelada(5000, trainingx, trainingYd, validationx, validationYd, 5, 30)
+# t <- mlp_batelada(50, x, classes, 1, 3)
 plot(test$error_vec, type="o")
 lines(test$error_val, type="o", pch=22, lty=2, col="red")
