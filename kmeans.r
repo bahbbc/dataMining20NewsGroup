@@ -16,9 +16,9 @@ my_kmeans <- function(data, k, error){
   centroid_stabilized <- 999
   epoch = 0
   
-  all_c_have_elements = TRUE
+  #all_have_elements = FALSE
   # while old_centroids - new_centroids > error AND all centroids have elements
-  while(centroid_stabilized > error && all_have_elements){
+  while(centroid_stabilized > error){
     epoch <- epoch + 1
     #using euclidian distance
     #euclidian <- t(t(elements) - centroids)
@@ -27,6 +27,7 @@ my_kmeans <- function(data, k, error){
     #using cosine distance
     distance <- data %*% t(centroids)/t((norm_row(centroids) %*% t(norm_row(data))))
     shortest_distance <- apply(distance, 1, which.max)
+    shortest_distance <- unlist(shortest_distance)
     
     #recalculate the centroids pos
     new_centroids = NULL
@@ -34,17 +35,23 @@ my_kmeans <- function(data, k, error){
       cluster_elem <- which(shortest_distance == i)
       new_centroids <- rbind(new_centroids, colSums(data[cluster_elem,])/length(cluster_elem))
     }
-    if(cluster_elem[cluster_elem != 0]){
-      all_have_elements = FALSE
+    # if there isn't elements for all centroids...
+    if(length(table(shortest_distance)) < k){
+      # sorts centroids again
+      print("Reiniciando o algoritmo")
+      centroids <- data[sample(nrow(data)), ]
+      # take the initial k elements as centroids
+      centroids <- centroids[1:k,]
+      next
     }
     old_centroids <- centroids
     centroids <- new_centroids
-    centroid_stabilized <- abs(sum(centroids) - sum(old_centroids))
-    print(paste('E', epoch))
+    centroid_stabilized <- abs(sum(centroids - old_centroids))
+    print(paste('E', epoch, 'distance', centroid_stabilized))
   }
-  list(groups=shortest_distance)
+  list(groups=shortest_distance, centroids=centroids)
 }
 
-# r <- my_kmeans(x, 3, 0.002)
+# r <- my_kmeans(t(tf_idf), 20, 0.002)
 # groups <- as.factor(r$groups)
 # plot(rowSums(x), pch=19, col=groups)
