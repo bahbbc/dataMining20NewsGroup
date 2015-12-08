@@ -21,11 +21,13 @@ my_kmeans <- function(data, k, error){
   while(centroid_stabilized > error){
     epoch <- epoch + 1
     #using euclidian distance
-    #euclidian <- t(t(elements) - centroids)
+    #euclidian <- data - centroids
     #distance <- sqrt(euclidian * euclidian)
+    #shortest_distance <- apply(distance, 1, which.min)
     
     #using cosine distance
-    distance <- data %*% t(centroids)/t((norm_row(centroids) %*% t(norm_row(data))))
+    distance <- (data %*% t(centroids))/t((norm_row(centroids) %*% t(norm_row(data))))
+    distance[is.na(distance)] <- 0
     shortest_distance <- apply(distance, 1, which.max)
     shortest_distance <- unlist(shortest_distance)
     
@@ -46,10 +48,10 @@ my_kmeans <- function(data, k, error){
     }
     old_centroids <- centroids
     centroids <- new_centroids
-    centroid_stabilized <- abs(sum(centroids - old_centroids))
+    centroid_stabilized <- sum(abs(centroids - old_centroids))
     print(paste('E', epoch, 'distance', centroid_stabilized))
   }
-  list(groups=shortest_distance, centroids=centroids)
+  list(groups=shortest_distance, centroids=centroids, old_centroids=old_centroids)
 }
 
 # r <- my_kmeans(t(tf_idf), 20, 0.002)
