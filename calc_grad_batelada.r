@@ -7,9 +7,9 @@ source('~/workspace/dataMining20NewsGroup/helper_functions.r')
 # N is the total instance number
 first_phase <- function(x, Yd, weights_a, weights_b){
   #calculate x*weights without bias, then sums the bias
-  Zin <- add_bias(x) %*% t(weights_a)
-  Z <- sigmoid(Zin)
-  Yin <- add_bias(Z) %*% t(weights_b)
+  Zin <- add_bias_b(x) %*% t(weights_a)
+  Z <- gauss(Zin)
+  Yin <- add_bias_b(Z) %*% t(weights_b)
   err <- Yin - Yd
   
   list(Zin=Zin, Z=Z, Yin=Yin, err=err)
@@ -19,15 +19,11 @@ first_phase <- function(x, Yd, weights_a, weights_b){
 dEt_dx_bat <- function(x, Yd, weights_a, weights_b){
   out <- first_phase(x, Yd, weights_a, weights_b)
   
-  dEt_db <- t(out$err) %*% add_bias(out$Z)
-  dEt_da <- t(out$err %*% weights_b[,1:(dim(weights_a)[1])] * (1 - out$Z) * out$Z) %*% add_bias(x) 
+  dEt_db <- t(out$err) %*% add_bias_b(out$Z)
+  dEt_da <- t(out$err %*% weights_b[,1:(dim(weights_a)[1])] * apply(out$Zin, 2, derivative_gaus)) %*% add_bias_b(x) 
   list(dEt_da, dEt_db)
 }
 
-quad_err <- function(err){
-  sum(err * err)
-}
-
-add_bias <-function(x){
+add_bias_b <-function(x){
   cbind(x, 1)
 }

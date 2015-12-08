@@ -34,5 +34,6 @@ binary_class <- function(class_data){
     class_matrix <- gsub(classes[class], binary_class, class_matrix)
   }
   #transforms all the strings to an integer matrix
-  matrix(as.integer(unlist(strsplit(class_matrix, ""))), nrow=length(class_data), ncol=length(classes), byrow=TRUE)
+  binary_data = matrix(as.integer(unlist(strsplit(class_matrix, ""))), nrow=length(class_data), ncol=length(classes), byrow=TRUE)
+  binary_data=binary_data
 }

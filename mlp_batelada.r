@@ -10,14 +10,14 @@ mlp_batelada <- function(max_epoch, x, Yd, validation, validationYd, alpha, hidd
   #weights_b <- matrix(c(0.25), nrow = 3, ncol=4)
   out = matrix(rep(0, dim(Yd)[1]), nrow=dim(Yd)[1], ncol=dim(Yd)[2])
   max_err <- 1e-5;
-  r <- 0.9
-  q <- 10
+  r <- 0.5
+  q <- 3
   gl <- 0
   min_val_error <- 999
   error_val <- NULL
   
   net_out <- first_phase(x, Yd, weights_a, weights_b)
-  En <- quad_err(net_out$err)/dim(x)[1]
+  En <- erro_tot(net_out$err, x)
   error_vec <- c(En)
   
   while(En >= max_err && epoch < max_epoch){
@@ -38,22 +38,22 @@ mlp_batelada <- function(max_epoch, x, Yd, validation, validationYd, alpha, hidd
     try_b <- new_weight(alpha, dEt_db, weights_b)
     net_out_try <- first_phase(x, Yd, try_a, try_b)
     Y <- net_out_try$Yin
-    error_prov <- quad_err(net_out_try$err)/dim(x)[1]
+    error_prov <- erro_tot(net_out_try$err, x)
     
-    #while(error_prov > En){
-    #  alpha <- alpha * r
+    while(error_prov > En){
+      alpha <- alpha * r
       
-    #  try_a <- new_weight(alpha, dEt_da, weights_a)
-    #  try_b <- new_weight(alpha, dEt_db, weights_b)
+      try_a <- new_weight(alpha, dEt_da, weights_a)
+      try_b <- new_weight(alpha, dEt_db, weights_b)
       
-    #  net_out_try <- first_phase(x, Yd, try_a, try_b)
-    #  error_prov <- quad_err(net_out_try$err)/dim(x)[1]
-    #  Y <- net_out_try$Yin
-    #}
+      net_out_try <- first_phase(x, Yd, try_a, try_b)
+      error_prov <- erro_tot(net_out_try$err, x)
+      Y <- net_out_try$Yin
+    }
     weights_a <- try_a
     weights_b <- try_b
     net_out_val_error <- first_phase(validation, validationYd, weights_a, weights_b)$err
-    En_val <- quad_err(net_out_val_error)/dim(x)[1]
+    En_val <- erro_tot(net_out_val_error, x)
     min_val_error <- min(En_val, min_val_error)
     error_val <- append(En_val, error_val)
     # generalization loss
@@ -61,9 +61,13 @@ mlp_batelada <- function(max_epoch, x, Yd, validation, validationYd, alpha, hidd
     print(paste("Erro",error_prov, "I", epoch, "alpha", alpha, "GL", gl))
     En <- error_prov
     error_vec <- append(error_vec, En)
-    #alpha <- q * alpha
+    alpha <- q * alpha
     out = Y
     
   }
   list(out=out, A=weights_a, B=weights_b, alpha=alpha, error_vec=error_vec, error_val=error_val)
+}
+
+erro_tot <- function(err, x){
+  sum(quad_err(err)/2)/dim(x)[1]
 }
