@@ -2,6 +2,7 @@
 p = factor(r$groups, levels=c(1:20), labels = sort(unique(classes)))
 compare <- table(p, classes)
 
+comp2 <- classes
 comp2 <- gsub("comp.graphics", "computer", comp2)
 comp2 <- gsub("comp.os.ms-windows.misc", "computer", comp2)
 comp2 <- gsub("comp.sys.ibm.pc.hardware", "computer", comp2)
