@@ -16,6 +16,10 @@ new_weight <- function(alpha, grad, old_weight){
   old_weight - alpha * grad
 }
 
+new_weight_m <- function(alpha, grad, old_weight, oldest_weigth){
+  old_weight - alpha * grad
+}
+
 grad_norm <- function(dEt_da, dEt_db){
   e <- matrix(c(as.matrix(dEt_da), as.matrix(dEt_db)), byrow = TRUE)
   e <- e/norm_vec(e)

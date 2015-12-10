@@ -1,4 +1,5 @@
 source('~/workspace/dataMining20NewsGroup/helper_functions.r')
+
 my_kmeans <- function(data, k, distFun, error) {
   #tf_idf = t(tf_idf)
   centroids <- data[sample(nrow(data)), ]
@@ -55,18 +56,14 @@ cosine_distance <- function(x, y){
   distanceMatrix
 }
 
-myCor <- function(points1, points2) {
+correlation_distance <- function(points1, points2) {
   return(1 - ((cor(t(points1), t(points2))+1)/2))
 }
 
-myEuclid <- function(points1, points2) {
+euclidian_distance <- function(points1, points2) {
   distanceMatrix <- Matrix(NA, nrow=dim(points1)[1], ncol=dim(points2)[1], sparse = TRUE)
   for(i in 1:nrow(points2)) {
     distanceMatrix[,i] <- sqrt(rowSums(t(t(points1)-points2[i,])^2))
   }
   distanceMatrix
 }
-
-# r <- my_kmeans(t(tf_idf), 20, 0.002)
-# groups <- as.factor(r$groups)
-# plot(rowSums(x), pch=19, col=groups)

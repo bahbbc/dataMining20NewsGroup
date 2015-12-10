@@ -1,7 +1,10 @@
-# Separates the data in training, test and validation
-# only receives a matriz or a dataframe
+# Separa os dados em treino, teste e validação.
+# recebe apenas uma matriz ou um data.frame
+
 # TODO: Falta colocar aleatoriedade no conjunto
 
+# Separa os dados aleatoriamente.
+# 50% para treino, 25% para treinamento e 25% para teste.
 separate_data <- function(data){
   data <- data[sample(nrow(data)), ]
   size <- dim(data)[1]
@@ -21,6 +24,8 @@ remove_class <- function(data){
 
   list(attributes=attributes, class=class)
 }
+
+# Transforma classes categóricas em binárias
 
 binary_class <- function(class_data){
   class_data <- as.vector(unlist(class_data))

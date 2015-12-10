@@ -1,3 +1,5 @@
+library(SnowballC)
+
 getClasses <- function(original_files){
   classes <- original_files
   classes <- gsub("[0-9]", "", classes)
@@ -70,8 +72,6 @@ remove_stop_words <- function(vectorized_text){
 }
 
 #Stemmer e StopWords
-library(SnowballC)
-
 stemming <- function(tokenized_text, concatenated_files) {
   for (file in tokenized_text){
     #separe the original vector in a char vector, then unlist to be able to use the stopWords and stem
